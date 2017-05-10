@@ -1,6 +1,6 @@
 {
   "name": "@segment/atlas",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Minimalistic framework for GraphQL servers",
   "main": "index.js",
   "bin": {
