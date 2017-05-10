@@ -1,0 +1,13 @@
+{
+  "name": "basic-example",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "atlas",
+    "start": "atlas start"
+  },
+  "dependencies": {
+    "@segment/atlas": "^0.0.0",
+    "graphql": "^0.9.6"
+  }
+}

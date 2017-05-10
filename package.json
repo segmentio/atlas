@@ -1,0 +1,22 @@
+{
+  "name": "@segment/atlas",
+  "version": "0.0.1",
+  "description": "Minimalistic framework for GraphQL servers",
+  "main": "index.js",
+  "bin": {
+    "atlas": "./bin.js"
+  },
+  "license": "MIT",
+  "repository": "segmentio/atlas-tool",
+  "dependencies": {
+    "globby": "^6.1.0",
+    "graphql": "^0.9.6",
+    "graphql-server-micro": "^0.7.2",
+    "graphql-tools": "^0.11.0",
+    "meow": "^3.7.0",
+    "micro": "^7.3.3"
+  },
+  "peerDependencies": {
+    "graphql": "^0.9.6"
+  }
+}
