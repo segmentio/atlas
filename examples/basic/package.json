@@ -6,7 +6,7 @@
     "start": "atlas"
   },
   "dependencies": {
-    "@segment/atlas": "^0.0.0",
+    "@segment/atlas": "latest",
     "graphql": "^0.9.6"
   }
 }
