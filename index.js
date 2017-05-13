@@ -1,18 +1,20 @@
 const { existsSync } = require('fs')
+const url = require('url')
 const path = require('path')
 const micro = require('micro')
 const globby = require('globby')
-const { parse, Kind } = require('graphql')
 const { microGraphql } = require('graphql-server-micro')
-const { makeExecutableSchema } = require('graphql-tools')
+const parser = require('./lib/parser')
 
-module.exports = (opts) => {
-  return new Server(opts)
+module.exports = (options) => {
+  return new Server(options)
 }
 
 class Server {
   constructor ({ dir }) {
     this.dir = dir
+    this.getContext = loadModule(`${this.dir}/_context.js`)
+    this.getScalars = loadModule(`${this.dir}/_scalars.js`)
   }
 
   async start (port) {
@@ -34,45 +36,22 @@ class Server {
   }
 
   async getSchema () {
-    let typeDefs = ''
-    const resolvers = {}
-
+    const scalars = await this.getScalars()
     return globby(`${this.dir}/!(_*).js`).then(paths => {
-      for (const path of paths) {
-        const type = require(path)
-        typeDefs += type.typeDef
-
-        const ast = parse(type.typeDef)
-        const objectTypeDef = ast.definitions
-          .find((def) => def.kind === Kind.OBJECT_TYPE_DEFINITION)
-
-        if (objectTypeDef) {
-          const name = objectTypeDef.name.value
-          resolvers[name] = {}
-          Object.keys(type).forEach(field => {
-            if (field !== 'typeDef') {
-              resolvers[name][field] = type[field]
-            }
-          })
-        }
-      }
-
-      typeDefs += `
-        schema {
-          ${resolvers.Query ? 'query: Query' : ''}
-          ${resolvers.Mutation ? 'mutation: Mutation' : ''}
-        }
-      `
-
-      return makeExecutableSchema({ typeDefs, resolvers })
+      return parser(paths, scalars)
     })
   }
+}
 
-  async getContext (req, res) {
-    const path = `${this.dir}/_context.js`
-    if (existsSync(path)) {
-      const getContext = require(path)
-      return await getContext(req, res)
+const loadModule = (path) => {
+  if (existsSync(path)) {
+    const module = require(path)
+    return async (...args) => {
+      return typeof module === 'function'
+        ? module(...args)
+        : module
     }
   }
+
+  return () => Promise.resolve()
 }

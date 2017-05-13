@@ -4,4 +4,6 @@ module.exports.typeDef = `
   }
 `
 
-module.exports.me = async (user, params, ctx) => ctx.getUser()
+module.exports.Query = {
+  me: async (user, params, ctx) => ctx.getUser()
+}

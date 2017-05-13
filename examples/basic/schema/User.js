@@ -6,4 +6,6 @@ module.exports.typeDef = `
   }
 `
 
-module.exports.posts = async (user, params, ctx) => ctx.getPosts(user.id)
+module.exports.User = {
+  posts: async (user, params, ctx) => ctx.getPosts(user.id)
+}
