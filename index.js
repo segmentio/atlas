@@ -3,7 +3,7 @@ const url = require('url')
 const path = require('path')
 const micro = require('micro')
 const globby = require('globby')
-const { microGraphql } = require('graphql-server-micro')
+const { microGraphql, microGraphiql } = require('graphql-server-micro')
 const parser = require('./lib/parser')
 
 module.exports = (options) => {
@@ -11,8 +11,9 @@ module.exports = (options) => {
 }
 
 class Server {
-  constructor ({ dir }) {
+  constructor ({ dir, graphiql = true }) {
     this.dir = dir
+    this.graphiql = graphiql
     this.getContext = loadModule(`${this.dir}/_context.js`)
     this.getScalars = loadModule(`${this.dir}/_scalars.js`)
   }
@@ -28,8 +29,15 @@ class Server {
 
   async getRequestHandler () {
     const schema = await this.getSchema()
-
     return async (req, res) => {
+      if (this.graphiql) {
+        const { pathname } = url.parse(req.url)
+
+        if (req.method === 'GET' && pathname === '/graphiql') {
+          return microGraphiql({})(req, res)
+        }
+      }
+
       const context = await this.getContext(req, res)
       return microGraphql({ schema, context })(req, res)
     }
