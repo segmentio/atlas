@@ -1,0 +1,13 @@
+{
+  "name": "customer-scalars-example",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "start": "atlas"
+  },
+  "dependencies": {
+    "@segment/atlas": "latest",
+    "graphql": "^0.9.6",
+    "graphql-type-json": "^0.1.4"
+  }
+}
